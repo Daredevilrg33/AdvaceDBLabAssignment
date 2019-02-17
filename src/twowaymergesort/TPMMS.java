@@ -16,7 +16,8 @@ public class TPMMS {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Runtime.getRuntime().gc();
-		File file = new File("E:\\Programs\\Java\\PCT\\TwoPhaseMultiwayMergeSort\\input.txt");
+
+		File file = new File(".." + "input.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		List<String> li = new ArrayList<String>();
 		Scanner scan = new Scanner(System.in);
@@ -49,17 +50,15 @@ public class TPMMS {
 			System.out.println(i + "->" + data.get(i));
 	}
 
-	public static void writeIntoFile(int file_no) throws Exception
-	{
-	    File file = new File("PART-"+file_no);
-		if(!file.exists())
-		{
+	public static void writeIntoFile(int file_no) throws Exception {
+		File file = new File("PART-" + file_no);
+		if (!file.exists()) {
 			file.createNewFile();
 		}
 		FileWriter fileWriter = new FileWriter(file.getAbsolutePath());
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		// for(int i=0;i<data.size();i++)
 		// bufferedWriter.write(String.join(data);
-			
+
 	}
 }
