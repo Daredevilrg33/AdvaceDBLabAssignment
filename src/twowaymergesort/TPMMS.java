@@ -17,13 +17,15 @@ public class TPMMS {
 		// TODO Auto-generated method stub
 		Runtime.getRuntime().gc();
 
-		File file = new File("C:\\Users\\SATISH\\Desktop\\AdvanceDBProject\\AdvaceDBLabAssignment\\src\\input.txt");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		List<String> li = new ArrayList<String>();
+		File file = new File(
+				"D:\\Concordia\\COMP 6521 ADV DATABASE TECH AND APPL\\LabAssignment1Project\\AdvaceDBLabAssignment\\src\\input.txt");
+
+		BufferedReader bufferReader = new BufferedReader(new FileReader(file));
 		Scanner scan = new Scanner(System.in);
 		System.out.print("Enter the RAM size : ");
 		int ram_size = scan.nextInt();
-		String line = br.readLine();
+		scan.close();
+		String line = bufferReader.readLine();
 		// System.out.println(line);
 		// System.out.println(line.length());
 		int record_size = line.length();
@@ -46,12 +48,38 @@ public class TPMMS {
 				writeIntoFile(file_count++);
 				data.clear();
 			}
-			line = br.readLine();
+			line = bufferReader.readLine();
 			lines_read++;
 		}
-		for (int i = 0; i < data.size(); i++)
-			// System.out.println(data.get(i).get(6)+" "+data.get(i).get(8));
-			System.out.println(i + "->" + data.get(i));
+		if (data.size() > 0)
+			writeIntoFile(file_count++);
+		data.clear();
+		int noOfRecordsPerFile = numberOfLinesToRead / file_count;
+		int i = 0;
+		while (i < numberOfLinesToRead) {
+			for (int j = 0; j < file_count; j++) {
+				int counter = 0;
+				bufferReader = new BufferedReader(new FileReader(new File(
+						"D:\\Concordia\\COMP 6521 ADV DATABASE TECH AND APPL\\LabAssignment1Project\\AdvaceDBLabAssignment\\PART-"
+								+ j + ".txt")));
+
+				while (counter < noOfRecordsPerFile && !bufferReader.readLine().trim().equalsIgnoreCase("")) {
+
+					String[] val = bufferReader.readLine().split("#");
+					i++;
+					List<String> record = new ArrayList<String>();
+					for (String value : val)
+						record.add(value);
+					data.add(record);
+					counter++;
+				}
+			}
+			Collections.sort(data, new DesendingOrderAmountPaidComparator());
+			Collections.sort(data, new AscendingOrderInsuredItem());
+			writeIntoFile(99);
+			data.clear();
+		}
+
 	}
 
 	public static void writeIntoFile(int file_no) throws Exception {
