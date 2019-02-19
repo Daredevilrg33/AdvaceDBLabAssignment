@@ -20,6 +20,7 @@ public class TPMMS {
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
 		Runtime.getRuntime().gc();
+//		System.out.println(Integer.MAX_VALUE);
 		File file = new File("C:\\Users\\SATISH\\Desktop\\AdvanceDBProject\\AdvaceDBLabAssignment\\bin\\input.txt");
 		BufferedReader bufferReader = new BufferedReader(new FileReader(file));
 		Scanner scan = new Scanner(System.in);
@@ -39,7 +40,7 @@ public class TPMMS {
 		// List<List<String>> data = new ArrayList<>();
 		int[] startIndices = { 0, 8, 18, 27, 52, 202, 230, 232, 241, 250 };
 		while (line != null) {
-			System.out.println(lines_read + " " + line + " " + line.length());
+			//System.out.println(lines_read + " " + line + " " + line.length());
 			List<String> record = new ArrayList<String>();
 			for (int i = 0; i < startIndices.length - 1; i++)
 				record.add(line.substring(startIndices[i], startIndices[i + 1]).trim());
@@ -54,7 +55,11 @@ public class TPMMS {
 			lines_read++;
 		}
 		if (data.size() > 0)
+		{
+			Collections.sort(data, new DesendingOrderAmountPaidComparator());
+			Collections.sort(data, new AscendingOrderInsuredItem());
 			writeIntoFile(file_count++,false);
+		}
 		data.clear();
 		System.out.println("File Count : "+file_count);
 		System.out.println("Number of line to read : "+numberOfLinesToRead);
@@ -62,15 +67,33 @@ public class TPMMS {
 		System.out.println("Number of records from a file : "+noOfRecordsPerFile);
 		mergeFiles(noOfRecordsPerFile);
 		System.out.println("Merging done!");
+//		File merge_file = new File("PART-"+Integer.MAX_VALUE+".txt");
+//		File merge_file = new File("PART-0.txt");
+//		FileReader merge_file_reader = new FileReader(merge_file);
+//		BufferedReader mbf = new BufferedReader(merge_file_reader);
+//		line = mbf.readLine();
+//		count = 1;
+//		while(line!=null)
+//		{
+//			String[] atb = line.split("#");
+//			System.out.println(count+" ---> "+atb[6]+" "+atb[8]);
+//			count++;
+//			line = mbf.readLine();
+//			
+//		}
 	}
 	public static void mergeFiles(int noOfRecordsPerFile) throws Exception
     {
-		int count = 0;
 		List<Integer> files_list = new ArrayList<Integer>();
+//		List<Integer> main_files_list = new ArrayList<Integer>();
 		for(int i=0;i<file_count;i++)
-			files_list.add(i);
+		{
+			  files_list.add(i);
+//		      main_files_list.add(i);
+		}
 		BufferedReader[] bufferedReaders = new BufferedReader[file_count];
-		File merge_file = new File("PART-99.txt");
+//		BufferedReader[] frontBufferedReaders = new BufferedReader[file_count];
+		File merge_file = new File("PART-"+Integer.MAX_VALUE+".txt");
 		if(merge_file.delete())
 		{
 			System.out.println("Merge file deleted!");
@@ -80,17 +103,29 @@ public class TPMMS {
 			System.out.println("file does not exist!");
 		}
 		for(int i=0;i<file_count;i++)
+		{
 			bufferedReaders[i] = new BufferedReader(new FileReader("PART-"+i+".txt"));
+//			frontBufferedReaders[i] = new BufferedReader(new FileReader("PART-"+i+".txt"));
+//			scans one record ahead
+//			frontBufferedReaders[i].readLine();
+//			frontBufferedReaders[i].readLine();
+		}
+		//String frontRecord;
 		while(files_list.size()!=0) 
 		{
 			System.out.println(files_list.size());
 			for(int j = 0; j < files_list.size(); j++) {
 				line = bufferedReaders[files_list.get(j)].readLine();
-				while (count < noOfRecordsPerFile && line!=null ) {
+				while (line!=null ) {
 					   List<String> record = new ArrayList<String>();   
 					   for(String attribute : line.trim().split("#"))
-					       record.add(attribute);
+					       record.add(attribute); 
 					   data.add(record);
+//					   frontRecord = frontBufferedReaders[files_list.get(j)].readLine();
+//					   if(frontRecord!=null && frontRecord.split("#")[6] != line.split("#")[6])
+//					   {
+//						   files_list.remove(files_list.get(j));
+//					   }
 					   line = bufferedReaders[files_list.get(j)].readLine();
 					   if(line==null)
 					   {
@@ -103,11 +138,12 @@ public class TPMMS {
 			}
 			Collections.sort(data, new DesendingOrderAmountPaidComparator());
 			Collections.sort(data, new AscendingOrderInsuredItem());
-			writeIntoFile(99,true);
+			writeIntoFile(Integer.MAX_VALUE,true);
 			data.clear();
 		}
         //System.out.println(lines_read);
         //System.out.println(count);
+		
     }
 	public static void writeIntoFile(int file_no,boolean append) throws Exception {
 		File file = new File("PART-" + file_no + ".txt");
@@ -116,7 +152,8 @@ public class TPMMS {
 		}
 		FileWriter fileWriter = new FileWriter(file.getAbsolutePath(),append);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		for (int i = 0; i < data.size(); i++) {
+		for (int i = 0; i < data.size(); i++) 
+		{
 			bufferedWriter.write(String.join("#", data.get(i)) + "\n");
 			// System.out.println(String.join("#",data.get(i)));
 		}
